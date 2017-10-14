@@ -1,0 +1,53 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+import javax.swing.text.html.HTMLDocument.Iterator;
+
+import java.io.IOException;  
+import org.jsoup.Jsoup;  
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;  
+import org.jsoup.nodes.Element;
+import java.net.URL;
+
+public class webScrawler {
+
+public static void main(String[] args){
+   Map<String, Integer> map =  new HashMap<String,Integer>();
+   System.out.println("Please type in the url: ");
+    Scanner sc = new Scanner(System.in);
+    String inputURL = sc.next();
+    try {
+		Document doc = Jsoup.connect(inputURL).get();
+		Elements links = doc.select("a[href]");		    
+		for(Element link : links){
+//			System.out.println("here is the link:" + link.attr("abs:href"));
+			boolean isWhitespace = link.attr("abs:href").matches("^\\s*$");
+			if(isWhitespace){
+				//do nothing
+			}
+			else{
+				URL url = new URL(link.attr("abs:href"));
+				String domain = url.getHost();
+				if(map.containsKey(domain)){
+					map.put(domain, map.get(domain)+1);
+				}
+				else{
+					map.put(domain, 1);
+				};
+			}
+		}
+		java.util.Iterator<String> iter = map.keySet().iterator();
+		while(iter.hasNext()){
+			String temp = iter.next();
+			int temp2 = map.get(temp);
+			System.out.println(temp + ": " + temp2);
+		}
+  
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+    
+}
+}
