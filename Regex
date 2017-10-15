@@ -11,9 +11,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WebCrawler {
-	private static Scanner sc;
+		private static Scanner sc;
+	private static Map<String,Integer> links = new HashMap<String,Integer>();
 
-	
+	// Method to store urls in HashMap
+	public static void storeData(String urlName){
+		if(links.containsKey(urlName)){
+			links.put(urlName, links.get(urlName)+1);	        				
+		}
+		else{
+			links.put(urlName, 1);
+		}
+	}
 	//Given a href = "http://sdfadfa" format, retrieve only the domain name.
 	public static String retrieveDomain1(String input){
 		String[] result = input.split("/");
@@ -28,15 +37,14 @@ public class WebCrawler {
 			return domainName;
 		}
 	
-		//Given a "www.dfadfadf.com", retrieve only the domain name.
-				public static String retrieveDomain3(String input){
-					String[] result = input.split("www");
-				    String domainName = result[1];
-					return domainName;
-				}
+	//Given a "www.dfadfadf.com", retrieve only the domain name.
+		public static String retrieveDomain3(String input){
+			String[] result = input.split("www");
+		    String domainName = result[1];
+			return domainName;
+		}
 					
 	public static void main(String[] args){
-		Map<String,Integer> links = new HashMap<String,Integer>();
 		// Recognize any line contains space + <a> + space
 		String regex1 = "(.*?)(<a)(\\s{1})(.*)(href=)(\")(.*?)(\")(.*?)";
 		Pattern pattern1 = Pattern.compile(regex1);
@@ -62,30 +70,15 @@ public class WebCrawler {
 	        			String newDomain = retrieveDomain1(afterhref);
 	        			if(newDomain.startsWith("wwww")){
 	        				String domain = retrieveDomain3(afterhref);
-	        				if(links.containsKey(domain)){
-		        				links.put(domain, links.get(domain)+1);	        				
-		        			}
-		        			else{
-		        				links.put(domain, 1);
-		        			}
+	        				storeData(domain);
 	        			}
 	        			else{
-	        				if(links.containsKey(newDomain)){
-		        				links.put(newDomain, links.get(newDomain)+1);	        				
-		        			}
-		        			else{
-		        				links.put(newDomain, 1);
-		        			}
+	        				storeData(newDomain);
 	        			}
 	        		}
 	        		else{
 	        			String newDomain = retrieveDomain2(afterhref);
-	        			if(links.containsKey(newDomain)){
-	        				links.put(newDomain, links.get(newDomain)+1);	        				
-	        			}
-	        			else{
-	        				links.put(newDomain, 1);
-	        			}
+        				storeData(newDomain);
 	        		}
 	        	}
 	        	        }
